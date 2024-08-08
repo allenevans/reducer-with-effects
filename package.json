@@ -1,0 +1,32 @@
+{
+  "name": "reducer-with-effects",
+  "version": "1.0.0",
+  "description": "An extended `useReducer` hook that allows middleware to be executed before and after",
+  "main": "index.js",
+  "scripts": {
+    "build": "vite build;",
+    "lint": "biome check --write .",
+    "test": "vitest --no-watch",
+    "verify": "npm run lint && npm run test"
+  },
+  "keywords": ["react", "hook", "reducer", "middleware"],
+  "author": "Allen Evans",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.3.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@testing-library/jest-dom": "6.4.8",
+    "@testing-library/react": "16.0.0",
+    "@types/node": "22.1.0",
+    "@types/react": "18.3.3",
+    "@vitejs/plugin-react-swc": "3.7.0",
+    "jsdom": "24.1.1",
+    "typescript": "^5.5.4",
+    "vite": "5.4.0",
+    "vite-plugin-dts": "4.0.1",
+    "vite-plugin-node-polyfills": "0.22.0",
+    "vitest": "2.0.5"
+  }
+}
