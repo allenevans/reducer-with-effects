@@ -1,0 +1,89 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: main-verify-${{ github.head_ref }}
+      cancel-in-progress: true
+
+    permissions:
+      contents: 'read'
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4 # https://github.com/actions/checkout/tags
+        with:
+          fetch-depth: 0
+          ref: main
+          clean: true
+
+      # clear any leftover tags from previous builds then get branches and tags
+      - name: Clean checkout
+        run: |
+          for tag in `git tag -l`; do git tag -d $tag; done
+          git fetch && git fetch -t && git checkout ${{github.head_ref}}
+
+      - name: Node.js
+        uses: actions/setup-node@v4 # https://github.com/actions/setup-node/tags
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: "Install dependencies"
+        run: npm install
+
+      - name: "Test"
+        run: npm run test
+
+      - name: "Lint"
+        run: npm run lint
+
+  build:
+    needs: verify
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4 # https://github.com/actions/checkout/tags
+        with:
+          fetch-depth: 0
+          ref: main
+          clean: true
+
+      # clear any leftover tags from previous builds then get branches and tags
+      - name: Clean checkout
+        run: |
+          for tag in `git tag -l`; do git tag -d $tag; done
+          git fetch && git fetch -t && git checkout ${{github.head_ref}}
+
+      - name: Node.js
+        uses: actions/setup-node@v4 # https://github.com/actions/setup-node/tags
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
